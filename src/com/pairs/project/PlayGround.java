@@ -16,9 +16,7 @@ public class PlayGround implements PlayStrategyInterface{
     @Override
     public void initialShuffle() {
         Stream.of(CardType.values())
-                .peek(System.out::println);
-
-        
+                .peek(System.out::println).count();
     }
     
 }

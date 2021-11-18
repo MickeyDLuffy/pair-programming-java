@@ -37,6 +37,11 @@ public class Deck implements Shuffleable {
         Collections.shuffle(cards);
     }
 
+    //method to pop a card
+    public Card popCard(){
+       return cards.remove(0);
+    }
+
     @Override
     public String toString() {
         return "Deck{" +

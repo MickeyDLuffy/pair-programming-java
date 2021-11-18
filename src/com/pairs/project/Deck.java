@@ -20,7 +20,7 @@ public class Deck implements Shuffleable {
     private void createDeck() {
         CardType.stream()
                 .peek(suit -> {
-                      CardValue.stream()
+                    CardValue.stream()
                             .forEach(value -> this.cards.add(new Card(suit, value)));
                 }).toList();
     }

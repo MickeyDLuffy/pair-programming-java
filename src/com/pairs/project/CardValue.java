@@ -22,6 +22,11 @@ public enum CardValue {
         this.value = value;
     }
 
+
+    public int getValue() {
+        return value;
+    }
+
     public static Stream<CardValue> stream() {
         return Stream.of(CardValue.values());
     }

@@ -8,7 +8,6 @@ public class Deck implements Shuffleable {
     private List<Card> cards;
 
 
-
     public Deck() {
         cards = new ArrayList<>();
         createDeck();

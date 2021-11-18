@@ -1,11 +1,14 @@
-package test.java;
+package com.pairs.project;
+
 import com.pairs.project.CardType;
 import com.pairs.project.PlayGround;
+import org.junit.jupiter.api.Test;
+
 import java.util.stream.Stream;
 
 
 class PlayGroundTest {
-
+    @Test
     void testInitialShuffle(){
         //pick a card type at random
         //pick a value related to that card at random

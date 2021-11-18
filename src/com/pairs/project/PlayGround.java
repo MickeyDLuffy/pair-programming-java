@@ -1,5 +1,7 @@
 package com.pairs.project;
 
+import java.util.stream.Stream;
+
 public class PlayGround implements PlayStrategyInterface{
     @Override
     public void hit(){
@@ -13,7 +15,9 @@ public class PlayGround implements PlayStrategyInterface{
 
     @Override
     public void initialShuffle() {
-       CardType.values().stream()
+        Stream.of(CardType.values())
+                .peek(System.out::println);
+
         
     }
     

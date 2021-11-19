@@ -9,8 +9,9 @@ public class Deck implements Shuffleable {
 
 
     public Deck() {
-        cards = new ArrayList<>();
-        createDeck();
+        cards = new ArrayList<>();//instantiate cards
+        createDeck(); //create 52 cards for the deck
+        shuffle();  //shuffle the deck after it has been created
     }
 
     /**
@@ -40,6 +41,10 @@ public class Deck implements Shuffleable {
     //method to pop a card
     public Card popCard(){
        return cards.remove(0);
+    }
+
+    public List<Card> getTwoCards(){
+       return List.of(popCard(), popCard());
     }
 
     @Override

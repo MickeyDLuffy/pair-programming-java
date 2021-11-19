@@ -6,16 +6,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player implements PlayerService {
-    public Strategy getStrategy() {
-        return strategy;
-    }
-
     private Strategy strategy = Strategy.DEFAULT;
     private Status status = Status.ACTIVE;
     private List<Card> cardsInHand = new ArrayList<>();
+    private int playerNumber = 0;
+
+    private static int count = 0;
+
+    public int getPlayerNumber() {
+        return playerNumber;
+    }
+
+    public void setPlayerNumber(int c) {
+        this.playerNumber = c;
+    }
+
 
     public Player(Strategy strategy) {
         this.strategy = strategy;
+        count++;
+        setPlayerNumber(count);
     }
 
     @Override
@@ -24,6 +34,10 @@ public class Player implements PlayerService {
                 "strategy=" + strategy +
                 ", cardsInHand=" + cardsInHand +
                 '}';
+    }
+
+    public Strategy getStrategy() {
+        return strategy;
     }
 
     public int totalPoints() {
@@ -39,7 +53,7 @@ public class Player implements PlayerService {
 
     @Override
     public void receiveCards(List<Card> cards) {
-         cardsInHand.addAll(cards);
+        cardsInHand.addAll(cards);
     }
 
     @Override

@@ -1,5 +1,5 @@
 package com.pairs.project;
 
 public enum Status {
-    ACTIVE, BUST;
+    ACTIVE, DONE, BUST;
 }

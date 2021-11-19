@@ -2,23 +2,25 @@ package com.pairs.project;
 
 import com.pairs.project.service.StrategyService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class GameMaster implements StrategyService {
-    private List<Map<Player, Integer>> scoreBoard = new ArrayList<>();
-
-
+    private List<Player> scoreBoard = new ArrayList<>();
 
     private List<Player> players = new ArrayList<>();
     private Deck deck;
+    private int numOfPlayers = 3;
 
     public GameMaster(Deck deck) {
         this.deck = deck;
 
         initPlayers();
+    }
+
+    public void getNumberofPlayers() {
+        Scanner scan = new Scanner(System.in);
+        numOfPlayers = scan.nextInt();
     }
 
     public List<Player> getPlayers() {
@@ -32,44 +34,65 @@ public class GameMaster implements StrategyService {
     }
 
     public void initPlayers() {
+
+        if (numOfPlayers < 1 || numOfPlayers > 6) {
+            try {
+                throw new Exception("The number of players should more than 1 but less than 6");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            } finally {
+                System.exit(0);
+            }
+        }
         //defaults to 3 players per game
         Strategy defaultStrategy = Strategy.DEFAULT;
-        players.addAll(List.of(new Player(defaultStrategy), new Player(defaultStrategy), new Player(defaultStrategy)));
-
+        for (int i=0; i<numOfPlayers; i++){
+            players.add(new Player(defaultStrategy));
+        }
         //deal hands for each player
         players.forEach(p -> {
             p.receiveCards(dealHands());
         });
-
     }
 
-    public List<Map<Player, Integer>> getScoreBoard() {
+    public List<Player> getScoreBoard() {
         return scoreBoard;
     }
 
     public void applyStrategy() {
-        players.forEach(p -> {
+
+        players.stream().filter(p -> p.getStatus() == Status.ACTIVE).forEach(p -> {
 //            if(p.getStrategy() == Strategy.DEFAULT)
             switch (p.getStrategy()) {
                 case DEFAULT: {
                     if (p.totalPoints() < 17) {
+                        var points = p.totalPoints();
                         hit(p);
-                    }
-                    else if(p.totalPoints() >=17 && p.totalPoints() <=21) {
+                        System.out.println("Player " + p.getPlayerNumber() + " had " + points + " points and made a hit and got " + p.totalPoints() + " points");
+                        if (p.totalPoints() >= 17 && p.totalPoints() <= 21) {
+                            if (p.totalPoints() == 21)
+                                win(p);
+                            else
+                                stick(p);
+
+                        } else if (p.totalPoints() > 21)
+                            goBust(p);
+
+                    } else if (p.totalPoints() >= 17 && p.totalPoints() <= 21) {
                         //decide if he/she is a winner
-                        if(p.totalPoints() ==21){
-                            System.out.println("Player "+(players.indexOf(p)+1)+" won the game");
-                            System.exit(0);
+                        if (p.totalPoints() == 21) {
+                            win(p);
                         }
                         stick(p);
-                    }else{
-                        //player can't play again, but him/her
-                        p.setStatus(Status.BUST);
+                    } else {
+                        goBust(p);
                     }
                     break;
                 }
             }
         });
+
+
     }
 
     @Override
@@ -80,16 +103,40 @@ public class GameMaster implements StrategyService {
     @Override
     public void stick(Player player) {
         //add player to scoreboard to await final decision
-        scoreBoard.add(Map.of(player, player.totalPoints()));
+        scoreBoard.add(player);
+        System.out.println("ssss Player " + player.getPlayerNumber() + " decided to stick with " + player.totalPoints() + " points ssss");
         //player can't play again, bust him/her
-        player.setStatus(Status.BUST);
+        player.setStatus(Status.DONE);
+    }
+
+    @Override
+    public void win(Player p) {
+        //decide if he/she is a winner
+        System.out.println("Player " + p.getPlayerNumber() + " won the game with " + p.totalPoints() + " points");
+        System.exit(0);
+    }
+
+    @Override
+    public void goBust(Player p) {
+        //player can't play again, but him/her
+        System.out.println("xxxx Player " + p.getPlayerNumber() + " just went bust with " + p.totalPoints() + " points xxxx");
+        p.setStatus(Status.BUST);
     }
 
     @Override
     public void endGame() {
-        if(scoreBoard.size() ==1){
-            System.out.println(scoreBoard.get(0));
-//            System.out.println("Player "+players.indexOf(scoreBoard.get(0).get(0))+1+" won the game");
+        if (scoreBoard.size() == 1) {
+            System.out.println("\n ending game with only one onboard");
+            var player = scoreBoard.get(0);
+            System.out.println("Player " + player.getPlayerNumber() + " won the game with " + player.totalPoints() + " points");
+        } else if (scoreBoard.size() > 1) {
+            System.out.println("ending game with more players onboard");
+            System.out.println(scoreBoard);
+            var player = scoreBoard.stream().sorted(Comparator.comparingInt(Player::totalPoints).reversed()).toList().get(0);
+//            var player = scoreBoard.get(0);
+            System.out.println("Player " + player.getPlayerNumber() + " won the game with " + player.totalPoints() + " points");
+        } else {
+            System.out.println("Game ended with no one winning");
         }
 
         System.exit(0);
@@ -97,7 +144,7 @@ public class GameMaster implements StrategyService {
 
     @Override
     public void playGame() {
-        while(players.stream().filter(p -> p.getStatus() == Status.ACTIVE).count() > 1){
+        while (players.stream().filter(p -> p.getStatus() == Status.ACTIVE).count() > 0) {
             applyStrategy();
         }
         endGame();

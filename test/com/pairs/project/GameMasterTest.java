@@ -33,6 +33,6 @@ class GameMasterTest {
 
     @Test
     public void testPlayGame(){
-
+        gameMaster.playGame();
     }
 }

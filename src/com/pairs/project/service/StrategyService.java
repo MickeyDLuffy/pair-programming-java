@@ -9,6 +9,9 @@ import java.util.List;
 public interface StrategyService {
     public void hit(Player player);
     public void stick(Player player);
+    public void goBust(Player p);
+    public void win(Player p);
     public void endGame();
     public void playGame();
+
 }

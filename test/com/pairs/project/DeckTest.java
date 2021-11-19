@@ -38,10 +38,14 @@ class DeckTest {
     public void popCardTest() {
         //pop card
         deck.popCard();
-
         //assert that new length of deck is 1 less of the original deck length
         assertEquals(51, deck.getCards().size(), "Failed to pop card so length of deck remains the same");
 //        System.out.println(deck.popCard());
+    }
+
+    @Test
+    public void getTwoCardsTest() {
+        assertEquals(2, deck.getTwoCards().size());
     }
 
 

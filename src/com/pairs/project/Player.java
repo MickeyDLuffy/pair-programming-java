@@ -1,20 +1,33 @@
 package com.pairs.project;
 
-import com.pairs.project.service.StrategyService;
+import com.pairs.project.service.PlayerService;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Player implements StrategyService {
+public class Player implements PlayerService {
+    public Strategy getStrategy() {
+        return strategy;
+    }
+
     private Strategy strategy = Strategy.DEFAULT;
-    private List<Card> cardsInHand;
+    private Status status = Status.ACTIVE;
+    private List<Card> cardsInHand = new ArrayList<>();
 
     public Player(Strategy strategy) {
         this.strategy = strategy;
     }
 
+    @Override
+    public String toString() {
+        return "Player{" +
+                "strategy=" + strategy +
+                ", cardsInHand=" + cardsInHand +
+                '}';
+    }
 
     public int totalPoints() {
-        if(cardsInHand.isEmpty()) {
+        if (cardsInHand.isEmpty()) {
             return 0;
         }
         return cardsInHand.stream()
@@ -24,16 +37,21 @@ public class Player implements StrategyService {
                 .sum();
     }
 
-
     @Override
-    public void hit(Deck deck) {
-        if(totalPoints() < 17) {
-
-        }
+    public void receiveCards(List<Card> cards) {
+         cardsInHand.addAll(cards);
     }
 
     @Override
-    public void stick(List<Card> cards) {
+    public List<Card> getCardsInHand() {
+        return cardsInHand;
+    }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }
